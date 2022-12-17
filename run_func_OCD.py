@@ -79,7 +79,9 @@ if args.resume_training:
     scale_model.load_state_dict(torch.load(args.scale_model_path))
 train_loader, test_loader, model = wrapper_dataset(config, args, device)
 model = model.to(device)
+input("add graph") # todo: remove
 tb_logger.add_graph(model, torch.zeros(1, 3, 640, 640, device=device))
+input("finished graph") # todo: remove
 
 if config.training.loss == 'mse':
     opt_error_loss = torch.nn.MSELoss()

@@ -92,6 +92,7 @@ def wrapper_dataset(config, args, device):
             test_ds.append(deepcopy(batch))
         model.load_state_dict(torch.load(args.backbone_path))
     elif 'yolov7' in args.datatype:
+        max_samples = 100 # todo: increase to 7000
         print(f"Getting {args.datatype} model")
         model = attempt_load(weights=args.datatype, map_location=device)
         print("Getting train samples")
@@ -105,10 +106,14 @@ def wrapper_dataset(config, args, device):
             train_x, train_label = data[0], data[1]
             batch = {'input': train_x, 'output': train_label}
             train_ds.append(deepcopy(batch))
+            if idx > max_samples:
+                break
         for idx, data in enumerate(test_loader):
             test_x, test_label = data[0], data[1]
             batch = {'input': test_x, 'output': test_label}
             test_ds.append(deepcopy(batch))
+            if idx > max_samples:
+                break
 
     else:
         raise Exception(f"Unknown {args.datatype=}")
