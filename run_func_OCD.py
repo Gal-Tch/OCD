@@ -80,9 +80,9 @@ if args.resume_training:
 train_loader, test_loader, model = wrapper_dataset(config, args, device)
 model = model.to(device)
 
-input("Press enter to add graph")
-zeros = torch.zeros(1, 3, 640, 640, device=device)
-tb_logger.add_graph(model, zeros.to(device))
+if input("Enter 't' to add graph") == "t":
+    zeros = torch.zeros(1, 3, 640, 640, device=device)
+    tb_logger.add_graph(model, zeros.to(device))
 
 if config.training.loss == 'mse':
     opt_error_loss = torch.nn.MSELoss()
