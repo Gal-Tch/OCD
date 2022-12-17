@@ -1,5 +1,6 @@
 import sys
 from train import train, vgg_encode
+
 sys.path.insert(0, '/workspace/OCD/yolov7/')
 import torch
 from copy import deepcopy
@@ -10,7 +11,6 @@ from ema import EMAHelper
 import argparse
 import json
 from data_loader import wrapper_dataset
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -79,8 +79,10 @@ if args.resume_training:
     scale_model.load_state_dict(torch.load(args.scale_model_path))
 train_loader, test_loader, model = wrapper_dataset(config, args, device)
 model = model.to(device)
+
 input("Press enter to add graph")
-tb_logger.add_graph(model, torch.zeros(1, 3, 640, 640).to(device))
+zeros = torch.zeros(1, 3, 640, 640, device=device)
+tb_logger.add_graph(model, zeros.to(device))
 
 if config.training.loss == 'mse':
     opt_error_loss = torch.nn.MSELoss()
