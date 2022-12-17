@@ -6,3 +6,4 @@ torch==1.12.0+cu116
 torchvision
 tqdm==4.46.1
 tensorboard
+requests

@@ -83,7 +83,7 @@ if config.training.loss == 'mse':
 elif config.training.loss == 'ce':
     opt_error_loss = torch.nn.CrossEntropyLoss()
 elif config.training.loss == 'own':
-    # Change according to desired objective
+    # todo: Change according to desired objective
     pass
 optimizer = torch.optim.Adam(diffusion_model.parameters(), lr=lr)
 optimizer_scale = torch.optim.Adam(scale_model.parameters(), lr=5 * lr)
