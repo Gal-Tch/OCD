@@ -12,7 +12,7 @@ from models.experimental import attempt_load
 from utils.datasets import LoadImagesAndLabels
 
 
-def wrapper_dataset(config, args, device) -> tuple[list, list, nn.Module]:
+def wrapper_dataset(config, args, device):
     if args.datatype == 'tinynerf':
 
         data = np.load(args.data_train_path)
