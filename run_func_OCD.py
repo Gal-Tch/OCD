@@ -1,3 +1,6 @@
+import sys
+
+sys.path.insert(0, '/workspace/OCD/yolov7/')
 import torch
 from copy import deepcopy
 from diffusion_ocd import Model, Model_Scale
@@ -8,9 +11,7 @@ from ema import EMAHelper
 import argparse
 import json
 from data_loader import wrapper_dataset
-import sys
 
-sys.path.insert(0, '/workspace/OCD/yolov7/')
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -79,9 +80,7 @@ if args.resume_training:
     scale_model.load_state_dict(torch.load(args.scale_model_path))
 train_loader, test_loader, model = wrapper_dataset(config, args, device)
 model = model.to(device)
-input("add graph") # todo: remove
-tb_logger.add_graph(model, torch.zeros(1, 3, 640, 640, device=device))
-input("finished graph") # todo: remove
+tb_logger.add_graph(model, torch.zeros(1, 3, 640, 640).to(device))
 
 if config.training.loss == 'mse':
     opt_error_loss = torch.nn.MSELoss()
