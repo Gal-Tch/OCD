@@ -1,12 +1,11 @@
 import sys
-
+from train import train, vgg_encode
 sys.path.insert(0, '/workspace/OCD/yolov7/')
 import torch
 from copy import deepcopy
 from diffusion_ocd import Model, Model_Scale
 from utils_OCD import overfitting_batch_wrapper, generalized_steps, ConfigWrapper
 import torch.utils.tensorboard as tb
-from train import train, vgg_encode
 from ema import EMAHelper
 import argparse
 import json
