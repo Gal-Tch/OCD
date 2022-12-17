@@ -6,7 +6,7 @@
         "loss": "mse"
     },
     "model": {
-        "weight_name": "fc1",
+        "weight_name": "model.57.conv",
         "name":"yolov7"
     },
     "checkpoint": {
