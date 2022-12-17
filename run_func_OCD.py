@@ -79,6 +79,7 @@ if args.resume_training:
     scale_model.load_state_dict(torch.load(args.scale_model_path))
 train_loader, test_loader, model = wrapper_dataset(config, args, device)
 model = model.to(device)
+input("Press enter to add graph")
 tb_logger.add_graph(model, torch.zeros(1, 3, 640, 640).to(device))
 
 if config.training.loss == 'mse':
@@ -116,7 +117,7 @@ print(f"{padding=}")
 #################################################################################################
 ########################################### Train Phase #########################################
 #################################################################################################
-
+input("Press enter to train")
 if args.train:
     diffusion_model, scale_model = train(args=args, config=config, optimizer=optimizer, optimizer_scale=optimizer_scale,
                                          device=device, diffusion_model=diffusion_model, scale_model=scale_model,
@@ -130,7 +131,7 @@ else:
 #################################################################################################
 ########################################### Test Phase ##########################################
 #################################################################################################
-
+input("Press enter to test")
 print('*' * 100)
 ldiff, lopt, lbaseline = 0, 0, 0
 for idx, batch in enumerate(test_loader):
