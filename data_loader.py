@@ -92,14 +92,14 @@ def wrapper_dataset(config, args, device):
             test_ds.append(deepcopy(batch))
         model.load_state_dict(torch.load(args.backbone_path))
     elif 'yolov7' in args.datatype:
-        max_samples = 100 # todo: increase to 7000
+        max_samples = 100  # todo: increase to 7000
         print(f"Getting {args.datatype} model")
         model = attempt_load(weights=args.datatype, map_location=device)
         print("Getting train samples")
-        train_loader = LoadImagesAndLabels(path="./coco/val2017.txt", batch_size=1,
+        train_loader = LoadImagesAndLabels(path="./coco/val2017.txt", batch_size=1, img_size=512,
                                            stride=max(int(model.stride.max()), 32))  # todo: change to test path
         print("Getting test samples")
-        test_loader = LoadImagesAndLabels(path="./coco/val2017.txt", batch_size=1,
+        test_loader = LoadImagesAndLabels(path="./coco/val2017.txt", batch_size=1, img_size=512,
                                           stride=max(int(model.stride.max()), 32))
         train_ds, test_ds = [], []
         for idx, data in enumerate(train_loader):
