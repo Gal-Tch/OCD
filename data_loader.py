@@ -111,6 +111,6 @@ def wrapper_dataset(config, args, device):
             test_ds.append(deepcopy(batch))
 
     else:
-        raise f"Unknown {args.datatype=}"
+        raise Exception(f"Unknown {args.datatype=}")
     print("Finished preparing data")
     return train_ds, test_ds, model
