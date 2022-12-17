@@ -89,21 +89,22 @@ def train(args, config, optimizer, optimizer_scale,
                     lr=lr_overfitting,
                     verbose=False
                 )
-            diff_weight = weight - dmodel_original_weight  # calculate optimal weight difference frmo baseline
+            diff_weight = weight - dmodel_original_weight  # calculate optimal weight difference from baseline
+            diff_weight.squeeze() # fixme: squeeze made by me
             t = torch.randint(low=0, high=diffusion_num_steps, size=(1,)
                               ).to(device)  # Sample random timestamp
             weight_noisy, error, sigma = noising(diff_weight, t)
             if args.datatype == 'tinynerf':
                 encoding_out = vgg_encode(outin)
             else:
-                encoding_out = outin
+                encoding_out = outin.squeeze() # fixme: squeeze made by me
             estimated_error = diffusion_model(
                 F.pad(weight_noisy, (padding[1][0], padding[1][1], padding[0][0], padding[0][1])),
-                hfirst,
+                hfirst.squeeze(), # fixme: squeeze made by me
                 encoding_out,
                 t.float()
             )
-            scale = scale_model(hfirst, encoding_out)  # estimate scale
+            scale = scale_model(hfirst.squeeze(), encoding_out)  # estimate scale .squeeze() # fixme: squeeze made by me
             estimated_error = estimated_error[:, 0, padding[0][0]:padding[0][0] + mat_shape[0],
                               padding[1][0]:padding[1][0] + mat_shape[1]]  # remove padding
             ascale = diff_weight.view(-1).std()  # calculate optimal scale
