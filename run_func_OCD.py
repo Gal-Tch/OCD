@@ -10,7 +10,7 @@ import json
 from data_loader import wrapper_dataset
 import sys
 
-sys.path.insert(0, '/workspace/OCD/yolov7')
+sys.path.insert(0, '/workspace/OCD/yolov7/')
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
