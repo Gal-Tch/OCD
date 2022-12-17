@@ -101,9 +101,6 @@ def wrapper_dataset(config, args, device):
         test_loader = LoadImagesAndLabels(path="./coco/val2017.txt", batch_size=1,
                                           stride=max(int(model.stride.max()), 32))
         train_ds, test_ds = [], []
-        import time
-        print("sleeping")
-        time.sleep(4)
         for idx, data in enumerate(train_loader):
             train_x, train_label = data[0], data[1]
             batch = {'input': train_x, 'output': train_label}
