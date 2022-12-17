@@ -78,7 +78,7 @@ if args.resume_training:
     diffusion_model.load_state_dict(torch.load(args.diffusion_model_path))
     scale_model.load_state_dict(torch.load(args.scale_model_path))
 train_loader, test_loader, model = wrapper_dataset(config, args, device)
-model = model.to(device)
+# model = model.to(device)
 
 if input("Enter 't' to add graph") == "t":
     zeros = torch.zeros(1, 3, 640, 640, device=device)
