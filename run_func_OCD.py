@@ -99,8 +99,8 @@ ema_helper.register(diffusion_model)
 ################################################# Check if weight is OK ##########################
 weight_name = config.model.weight_name
 dmodel_original_weight = deepcopy(model.get_parameter(weight_name + '.weight'))
-mat_shape = dmodel_original_weight.shape
-assert len(mat_shape) == 2, "Weight to overfit should be a matrix !"
+mat_shape = dmodel_original_weight.squeeze().shape
+# assert len(mat_shape) == 2, "Weight to overfit should be a matrix !"
 padding = []
 for s in mat_shape:
     if s == 128:
@@ -158,7 +158,7 @@ for idx, batch in enumerate(test_loader):
         std = scale_model(hfirst, encoding_out)
     ldiffusion, loptimal, lbase, wdiff = generalized_steps(
         named_parameter=weight_name, numstep=config.diffusion.diffusion_num_steps_eval,
-        x=(diff_weight.unsqueeze(0), hfirst, encoding_out), model=diffusion_model,
+        x=(diff_weight.squeeze().unsqueeze(0), hfirst, encoding_out), model=diffusion_model,
         bmodel=model, batch=batch, loss_fn=opt_error_loss,
         std=std, padding=padding,
         mat_shape=mat_shape, isnerf=(args.datatype == 'tinynerf')
