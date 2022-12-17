@@ -601,6 +601,9 @@ class Model(nn.Module):
     def forward_once(self, x, profile=False):
         y, dt = [], []  # outputs
         for i, m in enumerate(self.model):
+            if type(m) is Conv:
+                print(f"{i=}, {m.conv}")
+
             if m.f != -1:  # if not from previous layer
                 x = y[m.f] if isinstance(m.f, int) else [x if j == -1 else y[j] for j in m.f]  # from earlier layers
 
@@ -627,7 +630,6 @@ class Model(nn.Module):
             if i == 57: # todo: change value if switching layers
                 latent = deepcopy(x.detach())
             y.append(x if m.i in self.save else None)  # save output
-
         if profile:
             print('%.1fms total' % sum(dt))
         return x, (latent,latent_in)
