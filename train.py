@@ -48,9 +48,11 @@ def train(args, config, optimizer, optimizer_scale,
         ws, hs, outs = [], [], []
         for idx, batch in enumerate(train_loader):
             optimizer_scale.zero_grad()
+            print(f"In precompute, {idx=}, {batch['input'].shape=}, {batch['output'].shape=}")
             batch['input'] = batch['input'].to(device)
             batch['output'] = batch['output'].to(device)
             # Overfitting encapsulation #
+
             weight, hfirst, outin = overfitting_batch_wrapper(
                 datatype=args.datatype,
                 bmodel=model, weight_name=weight_name,
