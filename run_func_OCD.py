@@ -81,7 +81,7 @@ train_loader, test_loader, model = wrapper_dataset(config, args, device)
 model = model.to(device)
 
 if input("Enter 't' to add graph") == "t":
-    zeros = torch.zeros(1, 3, 640, 640, device=device)
+    zeros = torch.zeros(1, 3, 40, 40, device=device)
     tb_logger.add_graph(model, zeros.to(device))
 
 if config.training.loss == 'mse':
