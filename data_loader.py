@@ -98,7 +98,7 @@ def wrapper_dataset(config, args, device):
         train_loader = LoadImagesAndLabels(path="./coco/val2017.txt", batch_size=1,
                                            stride=max(int(model.stride.max()), 32))  # todo: change to test path
         print("Getting test samples")
-        test_loader = LoadImagesAndLabels(path="./coco/test-dev2017.txt", batch_size=1,
+        test_loader = LoadImagesAndLabels(path="./coco/val2017.txt", batch_size=1,
                                           stride=max(int(model.stride.max()), 32))
         train_ds, test_ds = [], []
         import time
