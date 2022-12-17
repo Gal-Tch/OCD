@@ -8,6 +8,9 @@ from ema import EMAHelper
 import argparse
 import json
 from data_loader import wrapper_dataset
+import sys
+
+sys.path.insert(0, '/workspace/OCD/yolov7')
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -63,7 +66,6 @@ torch.manual_seed(123456789)
 ####################################### Parameters & Initializations #####################################
 ##########################################################################################################
 
-module_path = args.backbone_path  # path to desired pretrained model
 tb_path = args.tensorboard_path  # path to tensorboard log
 tb_logger = tb.SummaryWriter(log_dir=tb_path)
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -76,15 +78,16 @@ if args.resume_training:
     diffusion_model.load_state_dict(torch.load(args.diffusion_model_path))
     scale_model.load_state_dict(torch.load(args.scale_model_path))
 train_loader, test_loader, model = wrapper_dataset(config, args, device)
-model.load_state_dict(torch.load(module_path))
 model = model.to(device)
+tb_logger.add_graph(model, torch.zeros(1, 3, 640, 640, device=device))
+
 if config.training.loss == 'mse':
     opt_error_loss = torch.nn.MSELoss()
 elif config.training.loss == 'ce':
     opt_error_loss = torch.nn.CrossEntropyLoss()
 elif config.training.loss == 'own':
-    # todo: Change according to desired objective
-    pass
+    opt_error_loss = torch.nn.MSELoss()
+
 optimizer = torch.optim.Adam(diffusion_model.parameters(), lr=lr)
 optimizer_scale = torch.optim.Adam(scale_model.parameters(), lr=5 * lr)
 ema_helper = EMAHelper(mu=0.9999)

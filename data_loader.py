@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 import numpy as np
 from nerf_utils.nerf import get_minibatches, positional_encoding
 from nerf_utils.tiny_nerf import VeryTinyNerfModel
@@ -7,9 +8,11 @@ import Lenet5
 from torch.utils.data import DataLoader
 from torchvision.transforms import ToTensor
 from copy import deepcopy
+from models.experimental import attempt_load
+from utils.datasets import LoadImagesAndLabels
 
 
-def wrapper_dataset(config, args, device):
+def wrapper_dataset(config, args, device) -> tuple[list, list, nn.Module]:
     if args.datatype == 'tinynerf':
 
         data = np.load(args.data_train_path)
@@ -66,6 +69,8 @@ def wrapper_dataset(config, args, device):
         batch['input'] = testpose
         batch['output'] = testimg
         test_ds = [batch]
+        model.load_state_dict(torch.load(args.backbone_path))
+
     elif args.datatype == 'mnist':
         model = Lenet5.NetOriginal()
         train_dataset = mnist.MNIST(
@@ -85,7 +90,27 @@ def wrapper_dataset(config, args, device):
             test_x = test_x[:, 0, :, :].unsqueeze(1)
             batch = {'input': test_x, 'output': test_label}
             test_ds.append(deepcopy(batch))
+        model.load_state_dict(torch.load(args.backbone_path))
+    elif 'yolov7' in args.datatype:
+        print(f"Getting {args.datatype} model")
+        model = attempt_load(weights=args.datatype, map_location=device)
+        print("Getting train samples")
+        train_loader = LoadImagesAndLabels(path="./coco/val2017.txt", batch_size=1,
+                                           stride=max(int(model.stride.max()), 32))  # todo: change to test path
+        print("Getting test samples")
+        test_loader = LoadImagesAndLabels(path="./coco/test-dev2017.txt", batch_size=1,
+                                          stride=max(int(model.stride.max()), 32))
+        train_ds, test_ds = [], []
+        for idx, data in enumerate(train_loader):
+            train_x, train_label = data[0], data[1]
+            batch = {'input': train_x, 'output': train_label}
+            train_ds.append(deepcopy(batch))
+        for idx, data in enumerate(test_loader):
+            test_x, test_label = data[0], data[1]
+            batch = {'input': test_x, 'output': test_label}
+            test_ds.append(deepcopy(batch))
+
     else:
-        # todo: implement on your own
-        pass
+        raise f"Unknown {args.datatype=}"
+    print("Finished preparing data")
     return train_ds, test_ds, model
