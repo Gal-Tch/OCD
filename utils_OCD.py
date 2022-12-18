@@ -126,12 +126,10 @@ def overfitting_batch(bmodel=None, weight_name='', bias_name='',
     for epoch in range(n_iteration):
         opt.zero_grad()
         predicted_labels, h = base_model(batch['input'].float())
-        predicted_labels_a, predicted_labels_b = predicted_labels
-        detached_labels = predicted_labels_a.detach(), predicted_labels_b.detach()
         if epoch == 0:
             hx, hy = h
             hfirst = copy.deepcopy((hx.detach(), hy.detach()))
-            out = copy.deepcopy(detached_labels)
+            out = copy.deepcopy(predicted_labels)
         loss = loss_fn(predicted_labels, batch['output'].long())
         loss.backward()
         opt.step()
