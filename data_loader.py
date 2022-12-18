@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 from torchvision.transforms import ToTensor
 from copy import deepcopy
 from models.experimental import attempt_load
-from utils.datasets import LoadImagesAndLabels
+from utils.datasets import LoadImagesAndLabels, InfiniteDataLoader
 
 
 def wrapper_dataset(config, args, device):
@@ -96,11 +96,23 @@ def wrapper_dataset(config, args, device):
         print(f"Getting {args.datatype} model")
         model = attempt_load(weights=args.datatype, map_location=device)
         print("Getting train samples")
-        train_loader = LoadImagesAndLabels(path="./coco/val2017.txt", batch_size=1, img_size=512,
-                                           stride=max(int(model.stride.max()), 32))  # todo: change to test path
+        train_dataset = LoadImagesAndLabels(path="./coco/val2017.txt", batch_size=1, img_size=512,
+                                            stride=max(int(model.stride.max()), 32))  # todo: change to test path
+        train_loader = InfiniteDataLoader(train_dataset,
+                                          batch_size=1,
+                                          num_workers=1,
+                                          sampler=None,
+                                          pin_memory=True,
+                                          collate_fn=LoadImagesAndLabels.collate_fn)
         print("Getting test samples")
-        test_loader = LoadImagesAndLabels(path="./coco/val2017.txt", batch_size=1, img_size=512,
-                                          stride=max(int(model.stride.max()), 32))
+        test_dataset = LoadImagesAndLabels(path="./coco/val2017.txt", batch_size=1, img_size=512,
+                                           stride=max(int(model.stride.max()), 32))
+        test_loader = InfiniteDataLoader(test_dataset,
+                                         batch_size=1,
+                                         num_workers=1,
+                                         sampler=None,
+                                         pin_memory=True,
+                                         collate_fn=LoadImagesAndLabels.collate_fn)
         train_ds, test_ds = [], []
         for idx, data in enumerate(train_loader):
             train_x, train_label = data[0], data[1]
