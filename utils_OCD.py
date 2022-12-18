@@ -129,12 +129,22 @@ def overfitting_batch(bmodel=None, weight_name='', bias_name='',
         if epoch == 0:
             hx, hy = h
             hfirst = copy.deepcopy((hx.detach(), hy.detach()))
-            out = copy.deepcopy(predicted_labels)
+            out = copy.deepcopy(recursivley_detach(predicted_labels))
         loss = loss_fn(predicted_labels, batch['output'].long())
         loss.backward()
         opt.step()
     weight = base_model.get_parameter(weight_name + '.weight').detach()
     return weight, hfirst, out
+
+
+def recursivley_detach(tuple_of_tensors):
+    res = []
+    for val in tuple_of_tensors:
+        if torch.is_tensor(val):
+            res.append(val.detach)
+        else:
+            res.append( recursivley_detach(val))
+
 
 
 def check_ps_nerf(named_parameter='', bmodel=None, w=0,
