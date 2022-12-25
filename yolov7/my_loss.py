@@ -28,7 +28,14 @@ def yolo_loss(out, targets):
     # targets[:, 2:] *= torch.Tensor([width, height, width, height]).to(device)  # todo: to pixels
     lb = []  # for autolabelling
     out, train_out = non_max_suppression(out, conf_thres=conf_thres, iou_thres=iou_thres, labels=lb, multi_label=True)
-
+    print(f"{type(train_out)=} ")
+    print(f"{len(train_out)=} ")
+    print(f"{train_out=} ")
+    print()
+    print()
+    print(f"{type(out)=} ")
+    print(f"{len(out)=} ")
+    print(f"{out=} ")
     # Statistics per image
     for si, pred in enumerate(out):
         labels = targets[targets[:, 0] == si, 1:]
