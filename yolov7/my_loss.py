@@ -134,7 +134,7 @@ if __name__ == '__main__':
     print()
     print()
     print(f"{batch['output']=}")
-    print(f"{batch['output'].shape=}")
+    print(f"{len(batch['output'])=}")
     hx, hy = h
     hfirst = copy.deepcopy((hx.detach(), hy.detach()))
     out = copy.deepcopy(recursivley_detach(predicted_labels))
