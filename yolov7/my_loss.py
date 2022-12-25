@@ -42,8 +42,8 @@ def yolo_loss(out, targets):
             tcls = labels[:, 0].tolist() if nl else []  # target class
             print(f"{tcls=}")
 
-            print(f"{len(pred)=}")
-            print(f"{pred.shape[0]=}")
+            print(f"{pred.shape=}")
+            print(f"{torch.unique(pred[:, 5])=}")
             if len(pred) == 0:
                 if nl:
                     stats.append((torch.zeros(0, niou, dtype=torch.bool), torch.Tensor(), torch.Tensor(), tcls))
@@ -64,7 +64,7 @@ def yolo_loss(out, targets):
 
                 # Per target class
                 for cls in torch.unique(tcls_tensor):
-                    print(f"{cls=}")
+
                     ti = (cls == tcls_tensor).nonzero(as_tuple=False).view(-1)  # prediction indices
                     pi = (cls == pred[:, 5]).nonzero(as_tuple=False).view(-1)  # target indices
                     # Search for detections
