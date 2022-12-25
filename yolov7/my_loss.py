@@ -1,4 +1,5 @@
 import sys
+
 sys.path.insert(0, '/workspace/OCD/')
 from data_loader import wrapper_dataset
 from utils.metrics import ap_per_class
@@ -26,7 +27,7 @@ def yolo_loss(out, targets):
     # Run NMS
     # targets[:, 2:] *= torch.Tensor([width, height, width, height]).to(device)  # todo: to pixels
     lb = []  # for autolabelling
-    out = non_max_suppression(out, conf_thres=conf_thres, iou_thres=iou_thres, labels=lb, multi_label=True)
+    out, train_out = non_max_suppression(out, conf_thres=conf_thres, iou_thres=iou_thres, labels=lb, multi_label=True)
 
     # Statistics per image
     for si, pred in enumerate(out):
