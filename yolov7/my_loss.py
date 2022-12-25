@@ -22,7 +22,7 @@ def yolo_loss(out, targets):
     jdict, stats, ap, ap_class, wandb_images = [], [], [], [], []
     #  todo: in origina batch loop
 
-    targets = targets.to(device)
+    targets = targets.to(device).float()
 
     # Run NMS
     nb, height, width = 1,  512, 512
