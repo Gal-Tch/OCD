@@ -13,7 +13,7 @@ from utils_OCD import recursivley_detach
 def yolo_loss(out, targets):
     conf_thres = 0.001
     iou_thres = 0.6
-    nc = 80
+    nc = 85
     device = "cuda"
     iouv = torch.linspace(0.5, 0.95, 10).to(device)  # iou vector for mAP@0.5:0.95
     niou = iouv.numel()
@@ -129,12 +129,10 @@ if __name__ == '__main__':
     out, train_out = predicted_labels
     print(f"{out=}")
     print(f"{out.shape=}")
-    print(f"{train_out=}")
-    print(f"{train_out.shape=}")
     print()
     print()
     print(f"{batch['output']=}")
-    print(f"{len(batch['output'])=}")
+    print(f"{batch['output'].shape=}")
     hx, hy = h
     hfirst = copy.deepcopy((hx.detach(), hy.detach()))
     out = copy.deepcopy(recursivley_detach(predicted_labels))
