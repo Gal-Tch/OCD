@@ -128,17 +128,13 @@ if __name__ == '__main__':
     model(batch['input'].float().to(device)) # todo remove run once
     predicted_labels, h = model(batch['input'].float().to(device))
     out, train_out = predicted_labels
-    print(f"{out=}")
-    print(f"{out.shape=}")
-    print()
-    print()
-    print(f"{batch['output']=}")
-    print(f"{batch['output'].shape=}")
+
     for i in range(100):
         batch = test_loader[i]
         print(f"{batch['output'].shape=}")
-    hx, hy = h
-    hfirst = copy.deepcopy((hx.detach(), hy.detach()))
-    out = copy.deepcopy(recursivley_detach(predicted_labels))
-    # loss = yolo_loss(predicted_labels, batch['output'].float())
+        hx, hy = h
+        hfirst = copy.deepcopy((hx.detach(), hy.detach()))
+        out = copy.deepcopy(recursivley_detach(predicted_labels))
+        loss = yolo_loss(predicted_labels, batch['output'].float())
+        print(loss[0][2])
 
