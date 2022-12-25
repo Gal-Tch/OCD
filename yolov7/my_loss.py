@@ -75,8 +75,12 @@ def yolo_loss(out, targets):
             stats.append((correct.cpu(), pred[:, 4].cpu(), pred[:, 5].cpu(), tcls))
 
     # Compute statistics
-    print(f"{len(stats)}")
-    print(f"{stats}")
+    print(f"{len(stats)=}")
+    print(f"{stats=}")
+    print()
+    print()
+    print(f"{len(stats[0])=}")
+    print(f"{stats[0]=}")
 
     # todo: uncomment
 
