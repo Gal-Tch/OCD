@@ -25,7 +25,9 @@ def yolo_loss(out, targets):
     targets = targets.to(device)
 
     # Run NMS
-    # targets[:, 2:] *= torch.Tensor([width, height, width, height]).to(device)  # todo: to pixels
+    nb, _, height, width = img.shape
+    targets[:, 2:] *= torch.Tensor([width, height, width, height]).to(device)  # todo: to pixels
+
     lb = []  # for autolabelling
     out = out[0]
     out = non_max_suppression(out, conf_thres=conf_thres, iou_thres=iou_thres, labels=lb, multi_label=True)
@@ -123,6 +125,7 @@ if __name__ == '__main__':
     model = model.to(device)
     batch = test_loader[0]
     model(batch['input'].float().to(device)) # todo remove run once
+    print(f"{batch['input'].shape=}")
     predicted_labels, h = model(batch['input'].float().to(device))
     hx, hy = h
     hfirst = copy.deepcopy((hx.detach(), hy.detach()))
