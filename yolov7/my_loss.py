@@ -30,55 +30,56 @@ def yolo_loss(out, targets):
     out = out[0]
     out = non_max_suppression(out, conf_thres=conf_thres, iou_thres=iou_thres, labels=lb, multi_label=True)
     # Statistics per image
-    for si, pred in enumerate(out):
-        labels = targets[targets[:, 0] == si, 1:]
-        nl = len(labels)
-        tcls = labels[:, 0].tolist() if nl else []  # target class
+    with torch.no_grad():
+        for si, pred in enumerate(out):
+            labels = targets[targets[:, 0] == si, 1:]
+            nl = len(labels)
+            tcls = labels[:, 0].tolist() if nl else []  # target class
 
-        if len(pred) == 0:
+            if len(pred) == 0:
+                if nl:
+                    stats.append((torch.zeros(0, niou, dtype=torch.bool), torch.Tensor(), torch.Tensor(), tcls))
+                continue
+
+            # Predictions
+            predn = pred.clone()
+            # Assign all predictions as incorrect
+            correct = torch.zeros(pred.shape[0], niou, dtype=torch.bool, device=device)
             if nl:
-                stats.append((torch.zeros(0, niou, dtype=torch.bool), torch.Tensor(), torch.Tensor(), tcls))
-            continue
+                detected = []  # target indices
+                tcls_tensor = labels[:, 0]
 
-        # Predictions
-        predn = pred.clone()
-        # Assign all predictions as incorrect
-        correct = torch.zeros(pred.shape[0], niou, dtype=torch.bool, device=device)
-        if nl:
-            detected = []  # target indices
-            tcls_tensor = labels[:, 0]
+                # target boxes
+                tbox = xywh2xyxy(labels[:, 1:5])
 
-            # target boxes
-            tbox = xywh2xyxy(labels[:, 1:5])
+                # Per target class
+                for cls in torch.unique(tcls_tensor):
+                    ti = (cls == tcls_tensor).nonzero(as_tuple=False).view(-1)  # prediction indices
+                    pi = (cls == pred[:, 5]).nonzero(as_tuple=False).view(-1)  # target indices
 
-            # Per target class
-            for cls in torch.unique(tcls_tensor):
-                ti = (cls == tcls_tensor).nonzero(as_tuple=False).view(-1)  # prediction indices
-                pi = (cls == pred[:, 5]).nonzero(as_tuple=False).view(-1)  # target indices
+                    # Search for detections
+                    if pi.shape[0]:
+                        # Prediction to target ious
+                        ious, i = box_iou(predn[pi, :4], tbox[ti]).max(1)  # best ious, indices
 
-                # Search for detections
-                if pi.shape[0]:
-                    # Prediction to target ious
-                    ious, i = box_iou(predn[pi, :4], tbox[ti]).max(1)  # best ious, indices
+                        # Append detections
+                        detected_set = set()
+                        for j in (ious > iouv[0]).nonzero(as_tuple=False):
+                            d = ti[i[j]]  # detected target
+                            if d.item() not in detected_set:
+                                detected_set.add(d.item())
+                                detected.append(d)
+                                correct[pi[j]] = ious[j] > iouv  # iou_thres is 1xn
+                                if len(detected) == nl:  # all targets already located in image
+                                    break
 
-                    # Append detections
-                    detected_set = set()
-                    for j in (ious > iouv[0]).nonzero(as_tuple=False):
-                        d = ti[i[j]]  # detected target
-                        if d.item() not in detected_set:
-                            detected_set.add(d.item())
-                            detected.append(d)
-                            correct[pi[j]] = ious[j] > iouv  # iou_thres is 1xn
-                            if len(detected) == nl:  # all targets already located in image
-                                break
-
-            stats.append((correct.cpu(), pred[:, 4].cpu(), pred[:, 5].cpu(), tcls))
+                stats.append((correct.cpu(), pred[:, 4].cpu(), pred[:, 5].cpu(), tcls))
 
     # Compute statistics
 
     # todo: uncomment
-    [val.detach() for val in stats[0]]
-    stats = [np.concatenate(x.detach(), 0) for x in zip(*stats)]  # to numpy
+
+    stats = [np.concatenate(x, 0) for x in zip(*stats)]  # to numpy
     print(f"{len(stats)=}")
     print(f"{stats=}")
 
