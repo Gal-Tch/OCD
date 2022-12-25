@@ -6,12 +6,12 @@ from utils.metrics import ap_per_class
 import numpy as np
 import torch
 import copy
-from utils.general import box_iou, non_max_suppression, xywh2xyxy
+from utils.general import box_iou, non_max_suppression, xywh2xyxy, scale_coords
 from utils_OCD import recursivley_detach
 
 
 def yolo_loss(out, targets):
-    conf_thres = 0.25
+    conf_thres = 0.001
     iou_thres = 0.6
     nc = 80
     device = "cuda"
@@ -31,6 +31,7 @@ def yolo_loss(out, targets):
     out = out[0]
     print(f"{out.shape=}")
     out = non_max_suppression(out, conf_thres=conf_thres, iou_thres=iou_thres, labels=lb, multi_label=True)
+    print(f"{out[0].shape=}")
     # Statistics per image
     with torch.no_grad():
         for si, pred in enumerate(out):
@@ -50,6 +51,7 @@ def yolo_loss(out, targets):
 
             # Predictions
             predn = pred.clone()
+            # scale_coords((3, 512, 512), predn[:, :4], shapes[si][0], shapes[si][1]) fixme
             # Assign all predictions as incorrect
             correct = torch.zeros(pred.shape[0], niou, dtype=torch.bool, device=device)
             if nl:
