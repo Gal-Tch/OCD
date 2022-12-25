@@ -96,7 +96,7 @@ def yolo_loss(out, targets):
     p, r, ap, f1, ap_class = ap_per_class(*stats)
     ap50, ap = ap[:, 0], ap.mean(1)  # AP@0.5, AP@0.5:0.95
     mp, mr, map50, map = p.mean(), r.mean(), ap50.mean(), ap.mean()
-    # print(f"{p=}")
+    print(f"{p=}")
     # print(f"{r=}")
     # print(f"{ap=}")
     # print(f"{f1=}")
