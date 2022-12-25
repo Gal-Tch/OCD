@@ -37,8 +37,10 @@ def yolo_loss(out, targets):
         for si, pred in enumerate(out):
             print(f"{si=} / {len(out)}")
             labels = targets[targets[:, 0] == si, 1:]
+            print(f"{labels=}")
             nl = len(labels)
             tcls = labels[:, 0].tolist() if nl else []  # target class
+            print(f"{tcls=}")
 
             if len(pred) == 0:
                 if nl:
@@ -55,6 +57,7 @@ def yolo_loss(out, targets):
 
                 # target boxes
                 tbox = xywh2xyxy(labels[:, 1:5])
+                print(f"{tbox=}")
 
                 # Per target class
                 for cls in torch.unique(tcls_tensor):
@@ -78,15 +81,14 @@ def yolo_loss(out, targets):
                                     break
 
                 stats.append((correct.cpu(), pred[:, 4].cpu(), pred[:, 5].cpu(), tcls))
-                print(f"{tcls=}")
 
     # Compute statistics
 
     # todo: uncomment
 
     stats = [np.concatenate(x, 0) for x in zip(*stats)]  # to numpy
-    print(f"{len(stats)=}")
-    print(f"{stats=}")
+    # print(f"{len(stats)=}")
+    # print(f"{stats=}")
 
 
     p, r, ap, f1, ap_class = ap_per_class(*stats)
@@ -107,7 +109,7 @@ def yolo_loss(out, targets):
     maps = np.zeros(nc) + map
     for i, c in enumerate(ap_class):
         maps[c] = ap[i]
-    print(f"{maps=}")
+    # print(f"{maps=}")
 
     return (mp, mr, map50, map), maps
 
