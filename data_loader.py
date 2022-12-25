@@ -96,7 +96,7 @@ def wrapper_dataset(config, args, device):
         print(f"Getting {args.datatype} model")
         model = attempt_load(weights=args.datatype, map_location=device)
         print("Getting train samples")
-        train_dataset = LoadImagesAndLabels(path="/workspace/OCD/yolov7/coco/val2017.txt", batch_size=1, img_size=512,
+        train_dataset = LoadImagesAndLabels(path="./coco/val2017.txt", batch_size=1, img_size=512,
                                             stride=max(int(model.stride.max()), 32))  # todo: change to test path
         train_loader = InfiniteDataLoader(train_dataset,
                                           batch_size=1,
@@ -105,7 +105,7 @@ def wrapper_dataset(config, args, device):
                                           pin_memory=True,
                                           collate_fn=LoadImagesAndLabels.collate_fn)
         print("Getting test samples")
-        test_dataset = LoadImagesAndLabels(path="/workspace/OCD/yolov7/coco/val2017.txt", batch_size=1, img_size=512,
+        test_dataset = LoadImagesAndLabels(path="./coco/val2017.txt", batch_size=1, img_size=512,
                                            stride=max(int(model.stride.max()), 32))
         test_loader = InfiniteDataLoader(test_dataset,
                                          batch_size=1,
