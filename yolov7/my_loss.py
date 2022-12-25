@@ -85,14 +85,26 @@ def yolo_loss(out, targets):
     print(f"{stats=}")
 
 
-    if len(stats) and stats[0].any():
-        p, r, ap, f1, ap_class = ap_per_class(*stats)
-        ap50, ap = ap[:, 0], ap.mean(1)  # AP@0.5, AP@0.5:0.95
-        mp, mr, map50, map = p.mean(), r.mean(), ap50.mean(), ap.mean()
+    p, r, ap, f1, ap_class = ap_per_class(*stats)
+    ap50, ap = ap[:, 0], ap.mean(1)  # AP@0.5, AP@0.5:0.95
+    mp, mr, map50, map = p.mean(), r.mean(), ap50.mean(), ap.mean()
+    print(f"{p=}")
+    print(f"{r=}")
+    print(f"{ap=}")
+    print(f"{f1=}")
+    print(f"{ap_class=}")
+    print(f"{ap50=}")
+    print(f"{mp=}")
+    print(f"{mr=}")
+    print(f"{map50=}")
+    print(f"{map=}")
+
 
     maps = np.zeros(nc) + map
     for i, c in enumerate(ap_class):
         maps[c] = ap[i]
+    print(f"{maps=}")
+
     return (mp, mr, map50, map), maps
 
 
@@ -115,4 +127,3 @@ if __name__ == '__main__':
     hfirst = copy.deepcopy((hx.detach(), hy.detach()))
     out = copy.deepcopy(recursivley_detach(predicted_labels))
     loss = yolo_loss(predicted_labels, batch['output'].long())
-    print(loss)
