@@ -32,6 +32,7 @@ def yolo_loss(out, targets):
     # Statistics per image
     with torch.no_grad():
         for si, pred in enumerate(out):
+            print(f"{si=} / {len(out)}")
             labels = targets[targets[:, 0] == si, 1:]
             nl = len(labels)
             tcls = labels[:, 0].tolist() if nl else []  # target class
