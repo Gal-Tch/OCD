@@ -63,9 +63,10 @@ def yolo_loss(out, targets):
 
                 # Per target class
                 for cls in torch.unique(tcls_tensor):
+                    print(f"{cls=}")
                     ti = (cls == tcls_tensor).nonzero(as_tuple=False).view(-1)  # prediction indices
                     pi = (cls == pred[:, 5]).nonzero(as_tuple=False).view(-1)  # target indices
-                    print(f"{pred[:, 5]=}")
+                    print(f"{pi=}")
                     # Search for detections
                     if pi.shape[0]:
                         # Prediction to target ious
@@ -134,7 +135,7 @@ if __name__ == '__main__':
     predicted_labels, h = model(batch['input'].float().to(device))
     out, train_out = predicted_labels
 
-    for i in range(10):
+    for i in range(1):
         batch = test_loader[i]
         print(f"{batch['output'].shape=}")
         hx, hy = h
