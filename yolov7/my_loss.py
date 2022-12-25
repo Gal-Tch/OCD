@@ -78,6 +78,7 @@ def yolo_loss(out, targets):
                                     break
 
                 stats.append((correct.cpu(), pred[:, 4].cpu(), pred[:, 5].cpu(), tcls))
+                print(f"{tcls=}")
 
     # Compute statistics
 
@@ -136,5 +137,5 @@ if __name__ == '__main__':
         hfirst = copy.deepcopy((hx.detach(), hy.detach()))
         out = copy.deepcopy(recursivley_detach(predicted_labels))
         loss = yolo_loss(predicted_labels, batch['output'].float())
-        print(loss[0][0])
+        # print(loss[0][0])
 
