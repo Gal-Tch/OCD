@@ -11,16 +11,14 @@ from utils_OCD import recursivley_detach
 
 
 def yolo_loss(out, targets):
-    conf_thres = 0.001
+    conf_thres = 0.25
     iou_thres = 0.6
-    nc = 85
     nc = 80
     device = "cuda"
     iouv = torch.linspace(0.5, 0.95, 10).to(device)  # iou vector for mAP@0.5:0.95
     niou = iouv.numel()
 
-    p, r, f1, mp, mr, map50, map, t0, t1 = 0., 0., 0., 0., 0., 0., 0., 0., 0.
-    jdict, stats, ap, ap_class, wandb_images = [], [], [], [], []
+    stats, ap, ap_class = [], [], []
     #  todo: in origina batch loop
 
     targets = targets.to(device).float()
@@ -94,7 +92,6 @@ def yolo_loss(out, targets):
     # print(f"{len(stats)=}")
     # print(f"{stats=}")
 
-
     p, r, ap, f1, ap_class = ap_per_class(*stats)
     ap50, ap = ap[:, 0], ap.mean(1)  # AP@0.5, AP@0.5:0.95
     mp, mr, map50, map = p.mean(), r.mean(), ap50.mean(), ap.mean()
@@ -108,7 +105,6 @@ def yolo_loss(out, targets):
     # print(f"{mr=}")
     # print(f"{map50=}")
     # print(f"{map=}")
-
 
     maps = np.zeros(nc) + map
     for i, c in enumerate(ap_class):
@@ -132,7 +128,7 @@ if __name__ == '__main__':
     train_loader, test_loader, model = wrapper_dataset("", args, device)
     model = model.to(device)
     batch = test_loader[0]
-    model(torch.zeros(1, 3, 512, 512).float().to(device)) # todo remove run once
+    model(torch.zeros(1, 3, 512, 512).float().to(device))  # todo remove run once
 
     for i in range(1):
         batch = test_loader[i]
@@ -141,4 +137,3 @@ if __name__ == '__main__':
         out = copy.deepcopy(recursivley_detach(predicted_labels))
         loss = yolo_loss(predicted_labels, batch['output'].float())
         # print(loss[0][0])
-

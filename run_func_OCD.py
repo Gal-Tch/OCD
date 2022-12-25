@@ -1,4 +1,6 @@
 import sys
+
+from my_loss import yolo_loss
 from train import train, vgg_encode
 
 sys.path.insert(0, '/workspace/OCD/yolov7/')
@@ -92,7 +94,7 @@ if config.training.loss == 'mse':
 elif config.training.loss == 'ce':
     opt_error_loss = torch.nn.CrossEntropyLoss()
 elif config.training.loss == 'own':
-    opt_error_loss = ComputeLoss(model)
+    opt_error_loss = yolo_loss
 
 optimizer = torch.optim.Adam(diffusion_model.parameters(), lr=lr)
 optimizer_scale = torch.optim.Adam(scale_model.parameters(), lr=5 * lr)
