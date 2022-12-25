@@ -42,6 +42,8 @@ def yolo_loss(out, targets):
             tcls = labels[:, 0].tolist() if nl else []  # target class
             print(f"{tcls=}")
 
+            print(f"{len(pred)=}")
+            print(f"{len(pred.shape[0])=}")
             if len(pred) == 0:
                 if nl:
                     stats.append((torch.zeros(0, niou, dtype=torch.bool), torch.Tensor(), torch.Tensor(), tcls))
@@ -132,7 +134,7 @@ if __name__ == '__main__':
     predicted_labels, h = model(batch['input'].float().to(device))
     out, train_out = predicted_labels
 
-    for i in range(100):
+    for i in range(10):
         batch = test_loader[i]
         print(f"{batch['output'].shape=}")
         hx, hy = h
