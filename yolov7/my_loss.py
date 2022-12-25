@@ -43,7 +43,7 @@ def yolo_loss(out, targets):
             print(f"{tcls=}")
 
             print(f"{len(pred)=}")
-            print(f"{len(pred.shape[0])=}")
+            print(f"{pred.shape[0]=}")
             if len(pred) == 0:
                 if nl:
                     stats.append((torch.zeros(0, niou, dtype=torch.bool), torch.Tensor(), torch.Tensor(), tcls))
