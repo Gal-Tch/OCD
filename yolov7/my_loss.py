@@ -126,8 +126,11 @@ if __name__ == '__main__':
     batch = test_loader[0]
     model(batch['input'].float().to(device)) # todo remove run once
     predicted_labels, h = model(batch['input'].float().to(device))
-    print(f"{predicted_labels=}")
-    print(f"{predicted_labels.shape=}")
+    out, train_out = predicted_labels
+    print(f"{out=}")
+    print(f"{out.shape=}")
+    print(f"{train_out=}")
+    print(f"{train_out.shape=}")
     print()
     print()
     print(f"{batch['output']=}")
