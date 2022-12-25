@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, '/workspace/OCD/')
 from data_loader import wrapper_dataset
 from utils.metrics import ap_per_class
 import numpy as np
@@ -93,7 +95,7 @@ class dotdict(dict):
 
 if __name__ == '__main__':
     args = dotdict()
-    args["datatype"] = "yolov7-tiny.py"
+    args["datatype"] = "yolov7-tiny.pt"
     train_loader, test_loader, model = wrapper_dataset("", args, "cuda")
     batch = next(test_loader)
     predicted_labels, h = model(batch['input'].float())
