@@ -25,7 +25,7 @@ def yolo_loss(out, targets):
     targets = targets.to(device)
 
     # Run NMS
-    nb, _, height, width = img.shape
+    nb, height, width = 1,  512, 512
     targets[:, 2:] *= torch.Tensor([width, height, width, height]).to(device)  # todo: to pixels
 
     lb = []  # for autolabelling
