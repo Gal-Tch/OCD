@@ -75,16 +75,14 @@ def yolo_loss(out, targets):
             stats.append((correct.cpu(), pred[:, 4].cpu(), pred[:, 5].cpu(), tcls))
 
     # Compute statistics
-    print(f"{len(stats)=}")
-    print(f"{stats=}")
-    print()
-    print()
-    print(f"{len(stats[0])=}")
-    print(f"{stats[0]=}")
 
     # todo: uncomment
 
     stats = [np.concatenate(x.detach(), 0) for x in zip(*stats)]  # to numpy
+    print(f"{len(stats)=}")
+    print(f"{stats=}")
+
+
     if len(stats) and stats[0].any():
         p, r, ap, f1, ap_class = ap_per_class(*stats)
         ap50, ap = ap[:, 0], ap.mean(1)  # AP@0.5, AP@0.5:0.95
