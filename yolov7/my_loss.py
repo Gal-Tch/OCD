@@ -29,6 +29,7 @@ def yolo_loss(out, targets):
 
     lb = []  # for autolabelling
     out = out[0]
+    print(f"{out.shape=}")
     out = non_max_suppression(out, conf_thres=conf_thres, iou_thres=iou_thres, labels=lb, multi_label=True)
     # Statistics per image
     with torch.no_grad():
