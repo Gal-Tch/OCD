@@ -77,7 +77,7 @@ def yolo_loss(out, targets):
     # Compute statistics
 
     # todo: uncomment
-
+    [val.detach() for val in stats[0]]
     stats = [np.concatenate(x.detach(), 0) for x in zip(*stats)]  # to numpy
     print(f"{len(stats)=}")
     print(f"{stats=}")
