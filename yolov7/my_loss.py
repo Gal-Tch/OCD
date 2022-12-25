@@ -67,8 +67,6 @@ def yolo_loss(out, targets):
                     print(f"{cls=}")
                     ti = (cls == tcls_tensor).nonzero(as_tuple=False).view(-1)  # prediction indices
                     pi = (cls == pred[:, 5]).nonzero(as_tuple=False).view(-1)  # target indices
-                    print(f"{pi=}")
-                    print(f"{torch.unique(pred[:, 5])=}")
                     # Search for detections
                     if pi.shape[0]:
                         # Prediction to target ious
@@ -133,7 +131,7 @@ if __name__ == '__main__':
     batch = test_loader[0]
     model(torch.zeros(1, 3, 512, 512).float().to(device))  # todo remove run once
 
-    for i in range(1):
+    for i in range(2,7):
         batch = test_loader[i]
         print(f"{batch['output'].shape=}")
         predicted_labels, h = model(batch['input'].float().to(device))
