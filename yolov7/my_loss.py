@@ -84,16 +84,16 @@ def yolo_loss(out, targets):
 
     # todo: uncomment
 
-    # stats = [np.concatenate(x, 0) for x in zip(*stats)]  # to numpy
-    # if len(stats) and stats[0].any():
-    #     p, r, ap, f1, ap_class = ap_per_class(*stats)
-    #     ap50, ap = ap[:, 0], ap.mean(1)  # AP@0.5, AP@0.5:0.95
-    #     mp, mr, map50, map = p.mean(), r.mean(), ap50.mean(), ap.mean()
-    #
-    # maps = np.zeros(nc) + map
-    # for i, c in enumerate(ap_class):
-    #     maps[c] = ap[i]
-    # return (mp, mr, map50, map), maps
+    stats = [np.concatenate(x.detach(), 0) for x in zip(*stats)]  # to numpy
+    if len(stats) and stats[0].any():
+        p, r, ap, f1, ap_class = ap_per_class(*stats)
+        ap50, ap = ap[:, 0], ap.mean(1)  # AP@0.5, AP@0.5:0.95
+        mp, mr, map50, map = p.mean(), r.mean(), ap50.mean(), ap.mean()
+
+    maps = np.zeros(nc) + map
+    for i, c in enumerate(ap_class):
+        maps[c] = ap[i]
+    return (mp, mr, map50, map), maps
 
 
 class dotdict(dict):
