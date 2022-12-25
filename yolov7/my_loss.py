@@ -90,16 +90,16 @@ def yolo_loss(out, targets):
     p, r, ap, f1, ap_class = ap_per_class(*stats)
     ap50, ap = ap[:, 0], ap.mean(1)  # AP@0.5, AP@0.5:0.95
     mp, mr, map50, map = p.mean(), r.mean(), ap50.mean(), ap.mean()
-    print(f"{p=}")
-    print(f"{r=}")
-    print(f"{ap=}")
-    print(f"{f1=}")
-    print(f"{ap_class=}")
-    print(f"{ap50=}")
-    print(f"{mp=}")
-    print(f"{mr=}")
-    print(f"{map50=}")
-    print(f"{map=}")
+    # print(f"{p=}")
+    # print(f"{r=}")
+    # print(f"{ap=}")
+    # print(f"{f1=}")
+    # print(f"{ap_class=}")
+    # print(f"{ap50=}")
+    # print(f"{mp=}")
+    # print(f"{mr=}")
+    # print(f"{map50=}")
+    # print(f"{map=}")
 
 
     maps = np.zeros(nc) + map
@@ -125,9 +125,14 @@ if __name__ == '__main__':
     model = model.to(device)
     batch = test_loader[0]
     model(batch['input'].float().to(device)) # todo remove run once
-    print(f"{batch['input'].shape=}")
     predicted_labels, h = model(batch['input'].float().to(device))
+    print(f"{predicted_labels=}")
+    print(f"{predicted_labels.shape=}")
+    print()
+    print()
+    print(f"{batch['output']=}")
+    print(f"{batch['output'].shape=}")
     hx, hy = h
     hfirst = copy.deepcopy((hx.detach(), hy.detach()))
     out = copy.deepcopy(recursivley_detach(predicted_labels))
-    loss = yolo_loss(predicted_labels, batch['output'].long())
+    # loss = yolo_loss(predicted_labels, batch['output'].float())
