@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, '/workspace/OCD/')
 import math
 from typing import List, Tuple
 
