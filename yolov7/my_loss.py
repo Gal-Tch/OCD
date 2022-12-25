@@ -95,8 +95,10 @@ class dotdict(dict):
 
 if __name__ == '__main__':
     args = dotdict()
+    device = "cuda"
     args["datatype"] = "yolov7-tiny.pt"
-    train_loader, test_loader, model = wrapper_dataset("", args, "cuda")
+    train_loader, test_loader, model = wrapper_dataset("", args, device)
+    model = model.to(device)
     batch = test_loader[0]
     predicted_labels, h = model(batch['input'].float())
     hx, hy = h
