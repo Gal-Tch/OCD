@@ -3,7 +3,7 @@ from utils.metrics import ap_per_class
 import numpy as np
 import torch
 import copy
-from utils.general import box_iou, non_max_suppression, xywh2xyxy,
+from utils.general import box_iou, non_max_suppression, xywh2xyxy
 from utils_OCD import recursivley_detach
 
 
