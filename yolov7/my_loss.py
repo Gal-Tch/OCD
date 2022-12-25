@@ -97,7 +97,7 @@ if __name__ == '__main__':
     args = dotdict()
     args["datatype"] = "yolov7-tiny.pt"
     train_loader, test_loader, model = wrapper_dataset("", args, "cuda")
-    batch = next(test_loader)
+    batch = test_loader[0]
     predicted_labels, h = model(batch['input'].float())
     hx, hy = h
     hfirst = copy.deepcopy((hx.detach(), hy.detach()))
