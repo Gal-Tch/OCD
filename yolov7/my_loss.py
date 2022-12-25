@@ -136,5 +136,5 @@ if __name__ == '__main__':
         hfirst = copy.deepcopy((hx.detach(), hy.detach()))
         out = copy.deepcopy(recursivley_detach(predicted_labels))
         loss = yolo_loss(predicted_labels, batch['output'].float())
-        print(loss[0][2])
+        print(loss[0][0])
 
